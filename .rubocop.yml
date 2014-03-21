@@ -1,0 +1,28 @@
+ClassLength:
+  Enabled: false
+CommentAnnotation:
+  Enabled: false
+Documentation:
+  Enabled: false
+DoubleNegation:
+  Enabled: false
+Encoding:
+  Enabled: false
+FavorSprintf:
+  Enabled: false
+LineLength:
+  Enabled: false
+MethodLength:
+  Enabled: false
+PercentLiteralDelimiters:
+  Enabled: false
+SignalException:
+  Enabled: false
+SpaceInsideBrackets:
+  Enabled: false
+SpaceInsideParens:
+  Enabled: false
+StringLiterals:
+  Enabled: false
+TrailingComma:
+  EnforcedStyleForMultiline: comma
