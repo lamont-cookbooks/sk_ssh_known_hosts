@@ -4,20 +4,19 @@ define :sk_ssh_known_hosts_entry do
   port = params[:port]
 
   key ||= `ssh-keyscan -H -p #{port} #{host} 2>&1`
-  comment = key.split("\n").first || ""
 
   Chef::Application.fatal! "Could not resolve #{host}" if key =~ /getaddrinfo/
 
   t = begin
-        resources(:template => "ssh_known_hosts_template_file")
+        resources(template: "ssh_known_hosts_template_file")
       rescue Chef::Exceptions::ResourceNotFound
         template "ssh_known_hosts_template_file" do
           path node['sk_ssh_known_hosts']['file']
           source "ssh_known_hosts.erb"
           cookbook "sk_ssh_known_hosts"
-          variables({
-            :entries => []
-          })
+          variables(
+            entries: [],
+          )
         end
       end
 

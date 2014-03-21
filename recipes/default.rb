@@ -28,30 +28,31 @@ if Chef::Config[:solo]
   # On Chef Solo, we still want the current node to be in the ssh_known_hosts
   hosts = [node]
 else
-  hosts = partial_search(:node, "keys_ssh:* NOT name:#{node.name}",
-                         :keys => {
+  hosts = partial_search(:node,
+                         "keys_ssh:* NOT name:#{node.name}",
+                         keys: {
                            'hostname' => [ 'hostname' ],
                            'fqdn'     => [ 'fqdn' ],
                            'ipaddress' => [ 'ipaddress' ],
-                           'host_rsa_public' => [ 'keys', 'ssh', 'host_rsa_public' ],
-                           'host_dsa_public' => [ 'keys', 'ssh', 'host_dsa_public' ]
-                         }
-                        ).collect do |host|
-                          {
-                            'fqdn' => host['fqdn'] || host['ipaddress'] || host['hostname'],
-                            'key' => host['host_rsa_public'] || host['host_dsa_public']
-                          }
+                           'host_rsa_public' => %w(keys ssh host_rsa_public),
+                           'host_dsa_public' => %w(keys ssh host_dsa_public),
+                         },
+                        ).map do |host|
+    {
+      'fqdn' => host['fqdn'] || host['ipaddress'] || host['hostname'],
+      'key' => host['host_rsa_public'] || host['host_dsa_public'],
+    }
   end
 end
 
 # Add the data from the data_bag to the list of nodes.
 # We need to rescue in case the data_bag doesn't exist.
 begin
-  hosts += data_bag('ssh_known_hosts').collect do |item|
+  hosts += data_bag('ssh_known_hosts').map do |item|
     entry = data_bag_item('ssh_known_hosts', item)
     {
       'fqdn' => entry['fqdn'] || entry['ipaddress'] || entry['hostname'],
-      'key'  => entry['rsa'] || entry['dsa']
+      'key'  => entry['rsa'] || entry['dsa'],
     }
   end
 rescue
@@ -60,13 +61,13 @@ end
 
 # Loop over the hosts and add 'em
 hosts.each do |host|
-  unless host['key'].nil?
+  if host['key'].nil?
+    # No key specified, so have known_host perform a DNS lookup
+    sk_ssh_known_hosts_entry host['fqdn']
+  else
     # The key was specified, so use it
     sk_ssh_known_hosts_entry host['fqdn'] do
       key host['key']
     end
-  else
-    # No key specified, so have known_host perform a DNS lookup
-    sk_ssh_known_hosts_entry host['fqdn']
   end
 end
