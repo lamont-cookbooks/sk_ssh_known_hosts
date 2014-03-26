@@ -1,0 +1,13 @@
+DEPENDENCIES
+  sk_ssh_known_hosts
+    path: .
+    metadata: true
+  unit
+    path: ./test/fixtures/cookbooks/unit
+
+GRAPH
+  partial_search (1.0.8)
+  sk_ssh_known_hosts (1.0.1)
+    partial_search (>= 0.0.0)
+  unit (1.0.0)
+    sk_ssh_known_hosts (>= 0.0.0)
