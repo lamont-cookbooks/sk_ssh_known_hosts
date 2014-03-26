@@ -13,5 +13,6 @@ end
 gem 'kitchen-digitalocean'
 gem 'kitchen-ec2'
 gem 'rake'
+gem 'knife-spork'
 
 gem 'travis'
