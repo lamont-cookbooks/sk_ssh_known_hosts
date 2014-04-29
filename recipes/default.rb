@@ -23,7 +23,13 @@
 
 # Gather a list of all nodes, warning if using Chef Solo
 
-hosts = [node]
+hosts = [ {
+  'hostname' => node['hostname'],
+  'fqdn' => node['fqdn'],
+  'ipaddress' => node['ipaddress'],
+  'host_rsa_public' => node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
+  'host_dsa_public' => node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
+} ]
 
 if Chef::Config[:solo]
   Chef::Log.warn 'ssh_known_hosts requires Chef search - Chef Solo does not support search!'
