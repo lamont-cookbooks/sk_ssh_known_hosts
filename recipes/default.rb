@@ -28,7 +28,7 @@ hosts = [node]
 if Chef::Config[:solo]
   Chef::Log.warn 'ssh_known_hosts requires Chef search - Chef Solo does not support search!'
 else
-  hosts << partial_search(
+  hosts + partial_search(
     :node,
     "keys_ssh:* NOT name:#{node.name}",
     keys: {
