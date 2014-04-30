@@ -24,11 +24,13 @@
 # Gather a list of all nodes, warning if using Chef Solo
 
 hosts = [ {
-  'hostname' => node['hostname'],
-  'fqdn' => node['fqdn'],
-  'ipaddress' => node['ipaddress'],
-  'host_rsa_public' => node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
-  'host_dsa_public' => node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
+  hostname:   node['hostname'],
+  fqdn:       node['fqdn'],
+  ipaddress:  node['ipaddress'],
+  rsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
+  dsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
+  ecdsa:      node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
+  ecdsa_type: node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
 } ]
 
 if Chef::Config[:solo]
@@ -38,20 +40,15 @@ else
     :node,
     "keys_ssh:* NOT name:#{node.name}",
     keys: {
-      'hostname' => [ 'hostname' ],
-      'fqdn'     => [ 'fqdn' ],
-      'ipaddress' => [ 'ipaddress' ],
-      'host_rsa_public' => %w(keys ssh host_rsa_public),
-      'host_dsa_public' => %w(keys ssh host_dsa_public),
+      hostname:    [ 'hostname' ],
+      fqdn:        [ 'fqdn' ],
+      ipaddress:   [ 'ipaddress' ],
+      rsa:         %w(keys ssh host_rsa_public),
+      dsa:         %w(keys ssh host_dsa_public),
+      ecdsa:       %w(keys ssh host_ecdsa_public),
+      ecdsa_type:  %w(keys ssh host_ecdsa_type),
     },
   )
-end
-
-hosts.map! do |host|
-  {
-    'fqdn' => host['fqdn'] || host['ipaddress'] || host['hostname'],
-    'key' => host['host_rsa_public'] || host['host_dsa_public'],
-  }
 end
 
 # Add the data from the data_bag to the list of nodes.
@@ -60,8 +57,13 @@ begin
   hosts += data_bag('ssh_known_hosts').map do |item|
     entry = data_bag_item('ssh_known_hosts', item)
     {
-      'fqdn' => entry['fqdn'] || entry['ipaddress'] || entry['hostname'],
-      'key'  => entry['rsa'] || entry['dsa'],
+      'fqdn'       => entry['fqdn'],
+      'ipaddress'  => entry['ipaddress'],
+      'hostname'   => entry['hostname'],
+      'rsa'        => entry['rsa'],
+      'dsa'        => entry['dsa'],
+      'ecsda'      => entry['ecsda'],
+      'ecdsa_type' => entry['ecdsa_type'],
     }
   end
 rescue
@@ -70,13 +72,11 @@ end
 
 # Loop over the hosts and add 'em
 hosts.each do |host|
-  if host['key'].nil?
-    # No key specified, so have known_host perform a DNS lookup
-    sk_ssh_known_hosts_entry host['fqdn']
-  else
-    # The key was specified, so use it
-    sk_ssh_known_hosts_entry host['fqdn'] do
-      key host['key']
-    end
+  entry_name = [ host['fqdn'], host['ipaddress'], host['hostname'] ].compact.join(",")
+  sk_ssh_known_hosts_entry entry_name do
+    rsa host['rsa']
+    dsa host['dsa']
+    ecdsa host['ecdsa']
+    ecdsa_type host['ecdsa_type']
   end
 end

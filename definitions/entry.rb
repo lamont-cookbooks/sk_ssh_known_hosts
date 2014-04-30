@@ -1,11 +1,15 @@
 define :sk_ssh_known_hosts_entry do
   host = params[:host] || params[:name]
-  key  = params[:key]
-  port = params[:port]
+  rsa  = params[:rsa]
+  dsa  = params[:dsa]
+  ecsda  = params[:ecsda]
+  ecsda_type = params[:ecsda_type]
+  # key  = params[:key]
+  # port = params[:port]
 
-  key ||= `ssh-keyscan -H -p #{port} #{host} 2>&1`
-
-  Chef::Application.fatal! "Could not resolve #{host}" if key =~ /getaddrinfo/
+  #key ||= `ssh-keyscan -H -p #{port} #{host} 2>&1`
+  #
+  #Chef::Application.fatal! "Could not resolve #{host}" if key =~ /getaddrinfo/
 
   t = begin
         resources(template: "ssh_known_hosts_template_file")
@@ -20,5 +24,21 @@ define :sk_ssh_known_hosts_entry do
         end
       end
 
-  t.variables[:entries].push(key)
+  t.variables[:entries].push({
+    host: host,
+    type: "ssh-rsa",
+    key:  rsa,
+  }) if rsa
+
+  t.variables[:entries].push({
+    host: host,
+    type: "ssh-dsa",
+    key:  dsa,
+  }) if dsa
+
+  t.variables[:entries].push({
+    host: host,
+    type: ecdsa_type,
+    key:  ecdsa,
+  }) if ecdsa && ecdsa_type
 end
