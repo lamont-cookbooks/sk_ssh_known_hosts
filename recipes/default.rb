@@ -24,13 +24,14 @@
 # Gather a list of all nodes, warning if using Chef Solo
 
 hosts = [ {
-  hostname:   node['hostname'],
-  fqdn:       node['fqdn'],
-  ipaddress:  node['ipaddress'],
-  rsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
-  dsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
-  ecdsa:      node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
-  ecdsa_type: node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
+  hostname:     node['hostname'],
+  fqdn:         node['fqdn'],
+  machinename:  node['machinename'],
+  ipaddress:    node['ipaddress'],
+  rsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
+  dsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
+  ecdsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
+  ecdsa_type:   node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
 } ]
 
 if Chef::Config[:solo]
@@ -40,13 +41,14 @@ else
     :node,
     "keys_ssh:* NOT name:#{node.name}",
     keys: {
-      'hostname'   => [ 'hostname' ],
-      'fqdn'       => [ 'fqdn' ],
-      'ipaddress'  => [ 'ipaddress' ],
-      'rsa'        => %w(keys ssh host_rsa_public),
-      'dsa'        => %w(keys ssh host_dsa_public),
-      'ecdsa'      => %w(keys ssh host_ecdsa_public),
-      'ecdsa_type' => %w(keys ssh host_ecdsa_type),
+      'hostname'    => [ 'hostname' ],
+      'fqdn'        => [ 'fqdn' ],
+      'ipaddress'   => [ 'ipaddress' ],
+      'machinename' => [ 'machinename' ],
+      'rsa'         => %w(keys ssh host_rsa_public),
+      'dsa'         => %w(keys ssh host_dsa_public),
+      'ecdsa'       => %w(keys ssh host_ecdsa_public),
+      'ecdsa_type'  => %w(keys ssh host_ecdsa_type),
     },
   ).map { |host| Hash[host.map { |k,v| [k.to_sym, v] }] } # symbolize_keys
 end
@@ -60,6 +62,7 @@ begin
       fqdn:        entry['fqdn'],
       ipaddress:   entry['ipaddress'],
       hostname:    entry['hostname'],
+      machinename: entry['machinename'],
       rsa:         entry['rsa'],
       dsa:         entry['dsa'],
       ecsda:       entry['ecsda'],
@@ -72,7 +75,7 @@ end
 
 # Loop over the hosts and add 'em
 hosts.each do |host|
-  entry_name = [ host[:fqdn], host[:ipaddress], host[:hostname] ].compact.join(",")
+  entry_name = [ host[:fqdn], host[:ipaddress], host[:hostname], host[:machinename] ].compact.join(",")
   sk_ssh_known_hosts_entry entry_name do
     rsa host[:rsa]
     dsa host[:dsa]
