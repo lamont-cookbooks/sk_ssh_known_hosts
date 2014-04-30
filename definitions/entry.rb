@@ -33,7 +33,7 @@ define :sk_ssh_known_hosts_entry do
 
   t.variables[:entries].push({
     host: host,
-    type: "ssh-dsa",
+    type: "ssh-dss",
     key:  dsa,
   }) if dsa
 
