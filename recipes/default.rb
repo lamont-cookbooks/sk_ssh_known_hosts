@@ -75,7 +75,7 @@ end
 
 # Loop over the hosts and add 'em
 hosts.each do |host|
-  entry_name = [ host[:fqdn], host[:ipaddress], host[:hostname], host[:machinename] ].compact.join(",")
+  entry_name = [ host[:fqdn], host[:machinename], host[:hostname], host[:ipaddress] ].compact.join(",")
   sk_ssh_known_hosts_entry entry_name do
     rsa host[:rsa]
     dsa host[:dsa]
