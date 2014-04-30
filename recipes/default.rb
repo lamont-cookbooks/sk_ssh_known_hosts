@@ -42,7 +42,7 @@ else
     keys: {
       'hostname'   => [ 'hostname' ],
       'fqdn'       => [ 'fqdn' ],
-      'paddress'   => [ 'ipaddress' ],
+      'ipaddress'  => [ 'ipaddress' ],
       'rsa'        => %w(keys ssh host_rsa_public),
       'dsa'        => %w(keys ssh host_dsa_public),
       'ecdsa'      => %w(keys ssh host_ecdsa_public),
