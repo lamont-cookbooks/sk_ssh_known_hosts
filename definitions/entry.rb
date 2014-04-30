@@ -1,9 +1,10 @@
 define :sk_ssh_known_hosts_entry do
-  host = params[:host] || params[:name]
-  rsa  = params[:rsa]
-  dsa  = params[:dsa]
-  ecsda  = params[:ecsda]
-  ecsda_type = params[:ecsda_type]
+  host       = params[:host] || params[:name]
+  rsa        = params[:rsa]
+  dsa        = params[:dsa]
+  ecdsa      = params[:ecdsa]
+  ecdsa_type = params[:ecdsa_type]
+
   # key  = params[:key]
   # port = params[:port]
 
