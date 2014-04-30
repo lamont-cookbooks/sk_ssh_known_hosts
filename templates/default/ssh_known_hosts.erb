@@ -1,4 +1,4 @@
 # THIS FILE IS MANAGED BY CHEF
-<% @entries.sort.each do |key| %>
-<%= key %>
+<% @entries.sort.each do |entry| %>
+<%= entry[:host] %> <%= entry[:type] %> <%= entry[:key] %>
 <% end %>
