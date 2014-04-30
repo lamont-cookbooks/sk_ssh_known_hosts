@@ -1,4 +1,4 @@
 # THIS FILE IS MANAGED BY CHEF
-<% @entries.each do |entry| %>
+<% @entries.sort { |a,b| a[:host] <=> b[:host] }.each do |entry| %>
 <%= entry[:host] %> <%= entry[:type] %> <%= entry[:key] %>
 <% end %>
