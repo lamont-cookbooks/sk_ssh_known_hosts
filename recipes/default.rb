@@ -57,13 +57,13 @@ begin
   hosts += data_bag('ssh_known_hosts').map do |item|
     entry = data_bag_item('ssh_known_hosts', item)
     {
-      'fqdn'       => entry['fqdn'],
-      'ipaddress'  => entry['ipaddress'],
-      'hostname'   => entry['hostname'],
-      'rsa'        => entry['rsa'],
-      'dsa'        => entry['dsa'],
-      'ecsda'      => entry['ecsda'],
-      'ecdsa_type' => entry['ecdsa_type'],
+      fqdn:        entry['fqdn'],
+      ipaddress:   entry['ipaddress'],
+      hostname:    entry['hostname'],
+      rsa:         entry['rsa'],
+      dsa:         entry['dsa'],
+      ecsda:       entry['ecsda'],
+      ecdsa_type:  entry['ecdsa_type'],
     }
   end
 rescue
@@ -72,11 +72,11 @@ end
 
 # Loop over the hosts and add 'em
 hosts.each do |host|
-  entry_name = [ host['fqdn'], host['ipaddress'], host['hostname'] ].compact.join(",")
+  entry_name = [ host[:fqdn], host[:ipaddress], host[:hostname] ].compact.join(",")
   sk_ssh_known_hosts_entry entry_name do
-    rsa host['rsa']
-    dsa host['dsa']
-    ecdsa host['ecdsa']
-    ecdsa_type host['ecdsa_type']
+    rsa host[:rsa]
+    dsa host[:dsa]
+    ecdsa host[:ecdsa]
+    ecdsa_type host[:ecdsa_type]
   end
 end
