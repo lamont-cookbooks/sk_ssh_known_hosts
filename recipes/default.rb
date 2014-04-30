@@ -40,15 +40,15 @@ else
     :node,
     "keys_ssh:* NOT name:#{node.name}",
     keys: {
-      hostname:    [ 'hostname' ],
-      fqdn:        [ 'fqdn' ],
-      ipaddress:   [ 'ipaddress' ],
-      rsa:         %w(keys ssh host_rsa_public),
-      dsa:         %w(keys ssh host_dsa_public),
-      ecdsa:       %w(keys ssh host_ecdsa_public),
-      ecdsa_type:  %w(keys ssh host_ecdsa_type),
+      'hostname'   => [ 'hostname' ],
+      'fqdn'       => [ 'fqdn' ],
+      'paddress'   => [ 'ipaddress' ],
+      'rsa'        => %w(keys ssh host_rsa_public),
+      'dsa'        => %w(keys ssh host_dsa_public),
+      'ecdsa'      => %w(keys ssh host_ecdsa_public),
+      'ecdsa_type' => %w(keys ssh host_ecdsa_type),
     },
-  )
+  ).map { |host| Hash[host.map { |k,v| [k.to_sym, v] }] } # symbolize_keys
 end
 
 # Add the data from the data_bag to the list of nodes.
