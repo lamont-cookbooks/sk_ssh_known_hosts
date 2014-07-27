@@ -1,0 +1,19 @@
+---
+driver:
+  name: vagrant
+  customize:
+    memory: 1024
+    cpus: 4
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+  - name: ubuntu-10.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[sk_ssh_known_hosts::default]
+    attributes:
