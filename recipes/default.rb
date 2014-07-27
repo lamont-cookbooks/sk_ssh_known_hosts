@@ -23,16 +23,18 @@
 
 # Gather a list of all nodes, warning if using Chef Solo
 
-hosts = [ {
-  hostname:     node['hostname'],
-  fqdn:         node['fqdn'],
-  machinename:  node['machinename'],
-  ipaddress:    node['ipaddress'],
-  rsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
-  dsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
-  ecdsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
-  ecdsa_type:   node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
-} ]
+hosts = [
+  {
+    hostname:     node['hostname'],
+    fqdn:         node['fqdn'],
+    machinename:  node['machinename'],
+    ipaddress:    node['ipaddress'],
+    rsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
+    dsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
+    ecdsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
+    ecdsa_type:   node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
+  },
+]
 
 if Chef::Config[:solo]
   Chef::Log.warn 'ssh_known_hosts requires Chef search - Chef Solo does not support search!'
@@ -50,7 +52,7 @@ else
       'ecdsa'       => %w(keys ssh host_ecdsa_public),
       'ecdsa_type'  => %w(keys ssh host_ecdsa_type),
     },
-  ).map { |host| Hash[host.map { |k,v| [k.to_sym, v] }] } # symbolize_keys
+  ).map { |host| Hash[host.map { |k, v| [k.to_sym, v] }] } # symbolize_keys
 end
 
 # Add the data from the data_bag to the list of nodes.

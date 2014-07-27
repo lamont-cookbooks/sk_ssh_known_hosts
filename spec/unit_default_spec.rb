@@ -15,4 +15,3 @@ describe "unit::default" do
     expect(test).to create_template("ssh_known_hosts_template_file")
   end
 end
-
