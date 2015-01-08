@@ -1,4 +1,7 @@
-define :sk_ssh_known_hosts_entry do
+
+# definitions are the right way to do an accumulator pattern,
+# foodcritic is wrong.
+define :sk_ssh_known_hosts_entry do  # ~FC015
   host       = params[:host] || params[:name]
   rsa        = params[:rsa]
   dsa        = params[:dsa]

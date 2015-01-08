@@ -29,10 +29,12 @@ hosts = [
     fqdn:         node['fqdn'],
     machinename:  node['machinename'],
     ipaddress:    node['ipaddress'],
-    rsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],
-    dsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],
-    ecdsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'],
-    ecdsa_type:   node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],
+    # ohai uses node['keys'] which conficts with node#keys, but that is an ohai issue and will not be fixed
+    # so foodcritic needs to ignore these.
+    rsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_rsa_public'],   # ~FC039
+    dsa:          node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_dsa_public'],   # ~FC039
+    ecdsa:        node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_public'], # ~FC039
+    ecdsa_type:   node['keys'] && node['keys']['ssh'] && node['keys']['ssh']['host_ecdsa_type'],   # ~FC039
   },
 ]
 
