@@ -5,5 +5,3 @@ description      "Manage ssh_known_hosts file properly using a definition rather
 long_description "Manage ssh_known_hosts file properly using a definition rather than an LWRP"
 version          "1.0.16"
 name             "sk_ssh_known_hosts"
-
-depends "partial_search"

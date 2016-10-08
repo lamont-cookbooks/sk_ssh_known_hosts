@@ -41,10 +41,10 @@ hosts = [
 if Chef::Config[:solo]
   Chef::Log.warn 'ssh_known_hosts requires Chef search - Chef Solo does not support search!'
 else
-  hosts += partial_search(
+  hosts += Chef::Search::Query.new.search(
     :node,
     "keys_ssh:* NOT name:#{node.name}",
-    keys: {
+    filter_result: {
       'hostname'    => [ 'hostname' ],
       'fqdn'        => [ 'fqdn' ],
       'ipaddress'   => [ 'ipaddress' ],
