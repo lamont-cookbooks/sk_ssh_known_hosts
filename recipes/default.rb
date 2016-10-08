@@ -51,9 +51,7 @@ res = Chef::Search::Query.new.search(
   },
 )
 
-pp res
-
-hosts += res.map { |host| Hash[host.map { |k, v| [k.to_sym, v] }] } # symbolize_keys
+hosts += res[0].map { |host| Hash[host.map { |k, v| [k.to_sym, v] }] } # symbolize_keys
 
 # Add the data from the data_bag to the list of nodes.
 # We need to rescue in case the data_bag doesn't exist.
