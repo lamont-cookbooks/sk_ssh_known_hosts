@@ -69,8 +69,8 @@ begin
       ecdsa_type:  entry['ecdsa_type'],
     }
   end
-#rescue
-#  Chef::Log.info "Could not load data bag 'ssh_known_hosts'"
+rescue Net::HTTPServerException # seriously?  this is a terrible error
+  Chef::Log.debug "Could not load data bag 'ssh_known_hosts'"
 end
 
 # Loop over the hosts and add 'em
