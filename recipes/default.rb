@@ -21,8 +21,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Gather a list of all nodes, warning if using Chef Solo
-
 hosts = [
   {
     hostname:     node['hostname'],
@@ -38,24 +36,24 @@ hosts = [
   },
 ]
 
-if Chef::Config[:solo]
-  Chef::Log.warn 'ssh_known_hosts requires Chef search - Chef Solo does not support search!'
-else
-  hosts += Chef::Search::Query.new.search(
-    :node,
-    "keys_ssh:* NOT name:#{node.name}",
-    filter_result: {
-      'hostname'    => [ 'hostname' ],
-      'fqdn'        => [ 'fqdn' ],
-      'ipaddress'   => [ 'ipaddress' ],
-      'machinename' => [ 'machinename' ],
-      'rsa'         => %w(keys ssh host_rsa_public),
-      'dsa'         => %w(keys ssh host_dsa_public),
-      'ecdsa'       => %w(keys ssh host_ecdsa_public),
-      'ecdsa_type'  => %w(keys ssh host_ecdsa_type),
-    },
-  ).map { |host| Hash[host.map { |k, v| [k.to_sym, v] }] } # symbolize_keys
-end
+res = Chef::Search::Query.new.search(
+  :node,
+  "keys_ssh:* NOT name:#{node.name}",
+  filter_result: {
+    'hostname'    => [ 'hostname' ],
+    'fqdn'        => [ 'fqdn' ],
+    'ipaddress'   => [ 'ipaddress' ],
+    'machinename' => [ 'machinename' ],
+    'rsa'         => %w(keys ssh host_rsa_public),
+    'dsa'         => %w(keys ssh host_dsa_public),
+    'ecdsa'       => %w(keys ssh host_ecdsa_public),
+    'ecdsa_type'  => %w(keys ssh host_ecdsa_type),
+  },
+)
+
+pp res
+
+hosts += res.map { |host| Hash[host.map { |k, v| [k.to_sym, v] }] } # symbolize_keys
 
 # Add the data from the data_bag to the list of nodes.
 # We need to rescue in case the data_bag doesn't exist.
